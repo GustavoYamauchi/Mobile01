@@ -42,6 +42,9 @@ class Exe05Activity : AppCompatActivity() {
                                 i--
                             }
                         }
+                        else {
+                            binding.txtCalc05.text = binding.txtCalc05.text.toString() + "0."
+                        }
                     } else if (expression.last() != op.last()) {
                         expression = expression.dropLast(1)
                         expression += op
@@ -58,57 +61,55 @@ class Exe05Activity : AppCompatActivity() {
 
         binding.btnEquals05.setOnClickListener {
             var expression = binding.txtCalc05.text.toString()
-            var nums = ArrayList<String>(expression.split("(÷|×|-|\\+)".toRegex()))
-            var ops = ArrayList<String>()
-            expression.forEach { if (it in "÷×-+") ops.add(it.toString()) }
-            var i = 0
-            var newNum = 0.toFloat()
-            var highPrecedence = true
-            while (nums.size > 1) {
-                when (ops[i]) {
-                    "÷" -> {
-                        if (highPrecedence) {
-                            newNum = nums[i].toFloat() / nums[i + 1].toFloat()
-                            nums[i] = newNum.toString()
-                            nums.removeAt(i + 1)
-                            ops.removeAt(i)
+            if (expression.last() !in "÷×-+.") {
+                var nums = ArrayList<String>(expression.split("(÷|×|-|\\+)".toRegex()))
+                var ops = ArrayList<String>()
+                expression.forEach { if (it in "÷×-+") ops.add(it.toString()) }
+                var i = 0
+                var newNum = 0.toFloat()
+                var highPrecedence = true
+                while (nums.size > 1) {
+                    when (ops[i]) {
+                        "÷" -> {
+                            if (highPrecedence) {
+                                newNum = nums[i].toFloat() / nums[i + 1].toFloat()
+                                nums[i] = newNum.toString()
+                                nums.removeAt(i + 1)
+                                ops.removeAt(i)
+                            } else i++
                         }
-                        else i++
+                        "×" -> {
+                            if (highPrecedence) {
+                                newNum = nums[i].toFloat() * nums[i + 1].toFloat()
+                                nums[i] = newNum.toString()
+                                nums.removeAt(i + 1)
+                                ops.removeAt(i)
+                            } else i++
+                        }
+                        "+" -> {
+                            if (!highPrecedence) {
+                                newNum = nums[i].toFloat() + nums[i + 1].toFloat()
+                                nums[i] = newNum.toString()
+                                nums.removeAt(i + 1)
+                                ops.removeAt(i)
+                            } else i++
+                        }
+                        "-" -> {
+                            if (!highPrecedence) {
+                                newNum = nums[i].toFloat() - nums[i + 1].toFloat()
+                                nums[i] = newNum.toString()
+                                nums.removeAt(i + 1)
+                                ops.removeAt(i)
+                            } else i++
+                        }
                     }
-                    "×" -> {
-                        if (highPrecedence) {
-                            newNum = nums[i].toFloat() * nums[i + 1].toFloat()
-                            nums[i] = newNum.toString()
-                            nums.removeAt(i + 1)
-                            ops.removeAt(i)
-                        }
-                        else i++
-                    }
-                    "+" -> {
-                        if (!highPrecedence) {
-                            newNum = nums[i].toFloat() + nums[i + 1].toFloat()
-                            nums[i] = newNum.toString()
-                            nums.removeAt(i + 1)
-                            ops.removeAt(i)
-                        }
-                        else i++
-                    }
-                    "-" -> {
-                        if (!highPrecedence) {
-                            newNum = nums[i].toFloat() - nums[i + 1].toFloat()
-                            nums[i] = newNum.toString()
-                            nums.removeAt(i + 1)
-                            ops.removeAt(i)
-                        }
-                        else i++
+                    if (i > ops.size - 1 && highPrecedence) {
+                        i = 0
+                        highPrecedence = false
                     }
                 }
-                if (i > ops.size - 1 && highPrecedence){
-                    i = 0
-                    highPrecedence = false
-                }
+                binding.txtResult05.text = newNum.toString()
             }
-            binding.txtResult05.text = newNum.toString()
         }
     }
 }

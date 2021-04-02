@@ -21,7 +21,7 @@ class Exe03Activity : AppCompatActivity() {
         messageAppsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         binding.spnMessageApp03.adapter = messageAppsAdapter
-        binding.spnEmailType03.adapter = messageAppsAdapter
+        binding.spnEmailType03.adapter = emailTypesAdapter
 
         binding.btnSave03.setOnClickListener {
             val msg = """Name: ${binding.txtName03.text}
